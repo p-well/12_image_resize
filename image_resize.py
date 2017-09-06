@@ -2,7 +2,6 @@ import os
 import argparse
 from PIL import Image
 
-
 def get_original_image_info(filepath):
     if os.path.exists(filepath):
         original_name = os.path.basename(filepath).split('.')[0]
@@ -16,18 +15,25 @@ def get_original_image_info(filepath):
     else:
         return None
 
-def create_new_image_name(filepath, out_width = None, out_height = None, out_path = None, out_name = None):
-    name, extension = original_image_info[0], original_image_info[1] 
+def create_new_image_name(out_width = None, out_height = None, out_path = None, out_name = None):
+    name = original_image_info[0]
+    extension = original_image_info[1]
     if not (out_path and out_name):
         new_image_name = '{}__{}x{}.{}'.format(name, out_width, out_height, extension)
     else:
         new_image_name = '{}.{}'.format(out_name, extension)
     return new_image_name
         
-def rescale_image(filepath, scale, savepath):
-    original_image, original_size = original_image_info[-1], original_image_info[2] 
+def rescale_image(original_image, scale, outpath):
+    original_image = original_image_info[-1]
+    original_size = original_image_info[2]
     new_image = original_image.resize([int(scale * dimension) for dimension in original_size], Image.ANTIALIAS)
-    new_image.save(new_image_name)
+    new_image_size = new_image.size
+    new_width = new_image_size[0]
+    new_height = new_image_size[1]
+    out_path = arguments.outpath
+    out_name = arguments.outname
+    new_image.save(create_new_image_name(new_width, new_height, out_path, out_name))
     
 # #def resize_image()
 
@@ -46,8 +52,10 @@ def create_parser():
 if __name__ == '__main__':
     arguments = create_parser()
     original_image_info = get_original_image_info(arguments.filepath)
-    new_image_name = create_new_image_name(arguments.filepath,
-                                        arguments.width,
-                                        arguments.height,
-                                        arguments.outname)
+    new_image_name = create_new_image_name(
+                                            arguments.width,
+                                            arguments.height,
+                                            arguments.outpath,
+                                            arguments.outname
+                                            )
     rescale_image(arguments.filepath, arguments.scale, arguments.outpath)
