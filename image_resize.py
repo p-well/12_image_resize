@@ -1,36 +1,35 @@
 import os
 import argparse
-#from PIL import Image
+from PIL import Image
+
 
 def get_original_image_info(filepath):
     if os.path.exists(filepath):
-        original_name = os.basename(filepath).split('.')[0]
+        original_name = os.path.basename(filepath).split('.')[0]
+        original_extension = os.path.basename(filepath).split('.')[1]
         original_image = Image.open(filepath)
-        original_format = original_image.format
         original_size = original_image.size
         original_width = original_size[0]
         original_height = original_size[1]
         original_ratio = original_width/original_height
-        return original_image, original_name, original_format, original_size, original_ratio
+        return original_name, original_extension, original_size, original_ratio, original_image
     else:
         return None
 
-def create_image_name(image_info, out_width = None, out_height = None, out_name = None):
-    
-    
-    
-    
-        
+def create_new_image_name(filepath, out_width = None, out_height = None, out_path = None, out_name = None):
+    name, extension = original_image_info[0], original_image_info[1] 
+    if not (out_path and out_name):
+        new_image_name = '{}__{}x{}.{}'.format(name, out_width, out_height, extension)
+    else:
+        new_image_name = '{}.{}'.format(out_name, extension)
+    return new_image_name
         
 def rescale_image(filepath, scale, savepath):
+    original_image, original_size = original_image_info[-1], original_image_info[2] 
     new_image = original_image.resize([int(scale * dimension) for dimension in original_size], Image.ANTIALIAS)
-    new_image.save()
+    new_image.save(new_image_name)
     
-    
-    
-def resize_image()
-    
-    
+# #def resize_image()
 
 def create_parser():
     parser = argparse.ArgumentParser(prog = 'Image Resize',
@@ -44,9 +43,11 @@ def create_parser():
     arguments = parser.parse_args()
     return arguments
  
-def main():
-    arguments = creare_parser()
-    image_info = get_original_image_info(arguments.filepath)
-    
- 
-create_parser()
+if __name__ == '__main__':
+    arguments = create_parser()
+    original_image_info = get_original_image_info(arguments.filepath)
+    new_image_name = create_new_image_name(arguments.filepath,
+                                        arguments.width,
+                                        arguments.height,
+                                        arguments.outname)
+    rescale_image(arguments.filepath, arguments.scale, arguments.outpath)
