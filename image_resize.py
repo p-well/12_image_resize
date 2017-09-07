@@ -15,6 +15,12 @@ def get_original_image_info(filepath):
     else:
         return None
 
+def create_outpath(outdir, outname): 
+    if outdir and outname:
+        out_basename = '{}.{}'.format(args.outname, original_image_info[1])
+        savepath = os.path.join(args.outdir, out_basename)
+        return savepath
+
 def create_new_image_name(out_width = None, out_height = None, out_dir = None, out_name = None):
     name = original_image_info[0]
     extension = original_image_info[1]
@@ -24,9 +30,9 @@ def create_new_image_name(out_width = None, out_height = None, out_dir = None, o
         new_image_name = '{}.{}'.format(out_name, extension)
     return new_image_name
         
-def rescale_image(original_image, scale, out_path): #out_path = outdir + outname + extension
-    original_image = original_image_info[4]
+def rescale_image(original_image_path, scale, out_path): #out_path = outdir + outname + extension
     original_size = original_image_info[2]
+    original_image = original_image_info[4]
     new_image = original_image.resize([int(scale * dimension) for dimension in original_size], Image.ANTIALIAS)
     new_width, new_height = new_image.size
     if (args.outdir and args.outname):
@@ -34,12 +40,34 @@ def rescale_image(original_image, scale, out_path): #out_path = outdir + outname
     else:    
         new_image.save(create_new_image_name(new_width, new_height))
     
-def resize_image(original_image, out_width, our_height, out_path):
+def get_new_size(out_width = None, out_height = None):
+    original_ratio = original_image_info[3]
+    #original_size, original_ratio = original_image_info[2:4]
+    #original_width, original_height = original_size
+    if out_width and not out_height:
+        new_width = out_width
+        new_height = int(out_width / original_ratio)
+        new_size = new_width, new_height
+    elif out_height and not out_width:
+        new_width = int(out_height * original_ratio)
+        new_height = out_height
+        new_size = new_width, new_height
+    else:
+        new_size = out_width, out_height     
+    return new_size     
 
+def resize_image(original_image_path, size, out_path):
+    original_image = original_image_info[4]
+    new_image = original_image.resize(size, Image.ANTIALIAS)
+    new_width, new_height = size[0], size[1]
+    if (args.outdir and args.outname):
+        new_image.save(out_path)
+    else:    
+        new_image.save(create_new_image_name(new_width, new_height))
 
 def create_parser():
     parser = argparse.ArgumentParser(prog = 'Image Resizing Program',
-                                     description = 'CLI script for image resizing by scale or dimensions'
+                                     description = 'CLI script for image resizing by scale or dimensions',
                                      epilog = '''Scale flag can not be combined with width or height flags!
                                                  Single width or height flag will create image with aspect ratio 
                                                  similar to original.
@@ -55,15 +83,19 @@ def create_parser():
                                             Do not specify file extension.', type=str)
     args = parser.parse_args()
     return args
- 
-if __name__ == '__main__':
+
+def main():
     args = create_parser()
     original_image_info = get_original_image_info(args.filepath)
     new_image_name = create_new_image_name(args.width, args.height, args.outdir, args.outname)
+    out_path = create_outpath(args.outdir, args.outname)
     if args.scale and (args.width or args.height):
-        print('Agruments conflict! Use only --scale or --width and/or -- height flags.')
+        print('\nAgruments conflict! Use only --scale or --width and/or -- height flags.')
     elif args.scale:
-        extended_outname = '{}.{}'.format(args.outname, original_image_info[1])
-        out_path = os.path.join(args.outdir, extended_outname)    
         rescale_image(args.filepath, args.scale, out_path)
-       
+    elif args.width or args.height:
+        new_size = get_new_size(args.width, args.height)
+        resize_image(args.filepath, new_size, out_path)
+ 
+if __name__ == '__main__':
+    main()
