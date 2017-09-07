@@ -1,6 +1,21 @@
 import os
 import argparse
 from PIL import Image
+from math import isclose
+
+def create_parser():
+    parser = argparse.ArgumentParser(prog = 'Image Resizing Program',
+                                     description = 'CLI script for image resizing by scale or dimensions',
+                                     epilog = 'See README for detailed program launch description')
+    parser.add_argument('filepath', help = 'Original image filepath', type=str)
+    parser.add_argument('--scale', help = 'Scale parameter: float, positive value', type=float)
+    parser.add_argument('--width', help = 'New image width: integer, positive value', type=int)
+    parser.add_argument('--height', help = 'New image height: integer, positive value', type=int)
+    parser.add_argument('--outdir', help ='Output directory path', type=str)
+    parser.add_argument('--outname', help ='Output name of modified image.\
+                                            Do not specify file extension.', type=str)
+    args = parser.parse_args()
+    return args
 
 def get_original_image_info(filepath):
     if os.path.exists(filepath):
@@ -30,7 +45,7 @@ def create_new_image_name(out_width = None, out_height = None, out_dir = None, o
         new_image_name = '{}.{}'.format(out_name, extension)
     return new_image_name
         
-def rescale_image(original_image_path, scale, out_path): #out_path = outdir + outname + extension
+def rescale_image(original_image_path, scale, out_path):
     original_size = original_image_info[2]
     original_image = original_image_info[4]
     new_image = original_image.resize([int(scale * dimension) for dimension in original_size], Image.ANTIALIAS)
@@ -42,8 +57,6 @@ def rescale_image(original_image_path, scale, out_path): #out_path = outdir + ou
     
 def get_new_size(out_width = None, out_height = None):
     original_ratio = original_image_info[3]
-    #original_size, original_ratio = original_image_info[2:4]
-    #original_width, original_height = original_size
     if out_width and not out_height:
         new_width = out_width
         new_height = int(out_width / original_ratio)
@@ -53,8 +66,10 @@ def get_new_size(out_width = None, out_height = None):
         new_height = out_height
         new_size = new_width, new_height
     else:
-        new_size = out_width, out_height     
-    return new_size     
+        new_size = out_width, out_height
+    new_ratio = new_size[0] / new_size[1]     
+    ratios_promixity = isclose(original_ratio, new_ratio, rel_tol = 0.01) 
+    return new_size, ratios_promixity      
 
 def resize_image(original_image_path, size, out_path):
     original_image = original_image_info[4]
@@ -65,26 +80,7 @@ def resize_image(original_image_path, size, out_path):
     else:    
         new_image.save(create_new_image_name(new_width, new_height))
 
-def create_parser():
-    parser = argparse.ArgumentParser(prog = 'Image Resizing Program',
-                                     description = 'CLI script for image resizing by scale or dimensions',
-                                     epilog = '''Scale flag can not be combined with width or height flags!
-                                                 Single width or height flag will create image with aspect ratio 
-                                                 similar to original.
-                                                 Simultaneous usage of width and height flags will raise warning in case of
-                                                 new aspect ratio is much differ from the original one, but new image
-                                                 still will be created.''')
-    parser.add_argument('filepath', help = 'Original image filepath', type=str)
-    parser.add_argument('--scale', help = 'Scale parameter: float, positive value', type=float)
-    parser.add_argument('--width', help = 'New image width: integer, positive value', type=int)
-    parser.add_argument('--height', help = 'New image height: integer, positive value', type=int)
-    parser.add_argument('--outdir', help ='Output directory path', type=str)
-    parser.add_argument('--outname', help ='Output name of modified image.\
-                                            Do not specify file extension.', type=str)
-    args = parser.parse_args()
-    return args
-
-def main():
+if __name__ == '__main__':
     args = create_parser()
     original_image_info = get_original_image_info(args.filepath)
     new_image_name = create_new_image_name(args.width, args.height, args.outdir, args.outname)
@@ -94,8 +90,8 @@ def main():
     elif args.scale:
         rescale_image(args.filepath, args.scale, out_path)
     elif args.width or args.height:
-        new_size = get_new_size(args.width, args.height)
+        ratios_promixity = get_new_size(args.width, args.height)[1]
+        if not ratios_promixity:
+            print('\nWarning! New aspect ratio much differ from original.')
+        new_size = get_new_size(args.width, args.height)[0]
         resize_image(args.filepath, new_size, out_path)
- 
-if __name__ == '__main__':
-    main()
