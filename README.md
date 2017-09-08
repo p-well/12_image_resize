@@ -7,7 +7,7 @@ Based on Pillow module - [pypi.python.org/pypi/Pillow/](https://pypi.python.org/
 # Installation
 
 Python 3.5 should be already installed. <br />
-Clone this repo on your machnine and install dependencies using ```pip install -r requirements.txt``` in CLI. 
+Clone this repo on your machnine and install dependencies using ```pip install -r requirements.txt``` in CLI. <br />
 It is recommended to use virtual environment.
 
 
@@ -59,9 +59,8 @@ Warning! New aspect ratio much differ from the original.
 
 
 ```
->python image_resize.py C:\projects\devman\12_image_resize\snapshot.jpg --scale 1.2 --outdir C:\projects\devman --outname test_image4
+>python image_resize.py C:\projects\devman\12_image_resize\snapshot.jpg --scale 1.2 <br />--outdir C:\projects\devman --outname test_image4
 ```
-
 
 
 # Project Goals
