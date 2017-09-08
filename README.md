@@ -15,7 +15,7 @@ It is recommended to use virtual environment.
 
 To the script execute the following command in CLI: ```python image_resize <arguments>```
 
-**Available arguments:**
+**Vies available arguments:**
 
 -h --help:  show help
 
@@ -29,7 +29,7 @@ filepath:  path to image you want to modify
 
 --width:  new image width (positive, integer)
 
---y_height:  new image height (positive, integer)
+--height:  new image height (positive, integer)
 
 --outpath:  new image output directory path
 
