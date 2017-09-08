@@ -39,13 +39,13 @@ filepath - path to image you want to modify
 
 - Scale flag can not be combined with width or height flags!
 
-- Single width or height flag will create image with aspect ratio similar to original
+- Usage of single width or height flag will create image with aspect ratio similar to original
 
 - Simultaneous usage of width and height flags will raise warning in case of new aspect ratio
-  is much differ from the original one, but new image still will be created
+  is much differ (>5%) from the original one, but new image still will be created
   
 - When one of flags --outpath or --outname is not specified the new image will be saved near original image (pic.jpg)
-   with the following naming rule: pic__(new_width x new_height).jpg
+  with the following naming rule: ```pic__(new_width x new_height).jpg```
 
 - The script does not change image type
 
@@ -59,7 +59,7 @@ Warning! New aspect ratio much differ from the original.
 
 
 ```
->python image_resize.py C:\projects\devman\12_image_resize\snapshot.jpg --scale 1.2 <br />--outdir C:\projects\devman --outname test_image4
+>python image_resize.py C:\projects\devman\12_image_resize\snapshot.jpg --scale 1.2 --outdir C:\projects\devman --outname test_image4
 ```
 
 
