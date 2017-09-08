@@ -1,7 +1,7 @@
 # Image Resizer
 
 CLI program for resing images by scale or dimenions.
-Based on [Pillow](https://pypi.python.org/pypi/Pillow/) module
+Based on [Pillow](https://pypi.python.org/pypi/Pillow/) module.
 
 
 # Installation
