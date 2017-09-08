@@ -37,10 +37,10 @@ def create_outpath(outdir, outname):
         return savepath
 
 def create_new_image_name(out_width = None, out_height = None, out_dir = None, out_name = None):
-    name = original_image_info[0]
+    original_name = original_image_info[0]
     extension = original_image_info[1]
     if not (out_dir and out_name):
-        new_image_name = '{}__{}x{}.{}'.format(name, out_width, out_height, extension)
+        new_image_name = '{}__{}x{}.{}'.format(original_name, out_width, out_height, extension)
     else:
         new_image_name = '{}.{}'.format(out_name, extension)
     return new_image_name
