@@ -17,11 +17,11 @@ To the script execute the following command in CLI: ```python image_resize <argu
 
 **Available arguments:**
 
--h --help: show help
+-h --help:  show help
 
 **Required arguments:**
 
-filepath - path to image you want to modify
+filepath:  path to image you want to modify
 
 **Optional arguments:**
 
