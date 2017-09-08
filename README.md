@@ -15,7 +15,7 @@ It is recommended to use virtual environment.
 
 To the script execute the following command in CLI: ```python image_resize <arguments>```
 
-**Vies available arguments:**
+**Show available arguments:**
 
 -h --help:  show help
 
