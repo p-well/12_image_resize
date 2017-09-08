@@ -1,19 +1,19 @@
 # Image Resizer
 
 CLI program for resing images by scale or dimenions.
-Based on Pillow module [pypi.python.org/pypi/Pillow/](https://pypi.python.org/pypi/Pillow/).
+Based on Pillow module - [pypi.python.org/pypi/Pillow/](https://pypi.python.org/pypi/Pillow/)
 
 
 # Installation
 
-Python 3.5 should be already installed.
+Python 3.5 should be already installed. <br />
 Clone this repo on your machnine and install dependencies using ```pip install -r requirements.txt``` in CLI. 
 It is recommended to use virtual environment.
 
 
 # Usage
 
-To the script execute the following in CLI: ```python image_resize <arguments>```
+To the script execute the following command in CLI: ```python image_resize <arguments>```
 
 **Available arguments:**
 
@@ -21,19 +21,19 @@ To the script execute the following in CLI: ```python image_resize <arguments>``
 
 **Required arguments:**
 
-[filepath] - path to image you want to modify
+filepath - path to image you want to modify
 
 **Optional arguments:**
 
---scale: scale parament (positive, float)
+--scale:  scale parament (positive, float)
 
---width: new image width (positive, integer)
+--width:  new image width (positive, integer)
 
---y_height: new image height (positive, integer)
+--y_height:  new image height (positive, integer)
 
---outpath: new image output directory path
+--outpath:  new image output directory path
 
---outname: new image name (without extentions) 
+--outname:  new image name (without extentions) 
 
 **Instructions:**
 
@@ -44,21 +44,22 @@ To the script execute the following in CLI: ```python image_resize <arguments>``
 - Simultaneous usage of width and height flags will raise warning in case of new aspect ratio
   is much differ from the original one, but new image still will be created
   
--- When one of flags --outpath or --outname is not specified the new image will be saved near original image (pic.jpg)
+- When one of flags --outpath or --outname is not specified the new image will be saved near original image (pic.jpg)
    with the following naming rule: pic__(new_width x new_height).jpg
 
--- The script does not change image type
+- The script does not change image type
 
 # Example of Script Launch
 
 ```
-(env) c:\projects\devman\12_image_resize>python image_resize.py C:\projects\devman\12_image_resize\snapshot.jpg --width 700 --height 400
+>python image_resize.py C:\projects\devman\12_image_resize\snapshot.jpg --width 700 --height 400
 
-      Warning! New aspect ratio much differ from the original.
+Warning! New aspect ratio much differ from the original.
 ```
 
+
 ```
-(env) c:\projects\devman\12_image_resize>python image_resize.py C:\projects\devman\12_image_resize\snapshot.jpg --scale 0.85 --outdir C:\projects\devman
+>python image_resize.py C:\projects\devman\12_image_resize\snapshot.jpg --scale 1.2 --outdir C:\projects\devman --outname test_image4
 ```
 
 
@@ -66,12 +67,3 @@ To the script execute the following in CLI: ```python image_resize <arguments>``
 # Project Goals
 
 The code is written for educational purposes. Training course for web-developers - [DEVMAN.org](https://devman.org)
-
-
-
-
-
-
-
-
-
