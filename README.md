@@ -13,7 +13,7 @@ It is recommended to use virtual environment.
 
 # Usage
 
-To the script execute the following command in CLI: ```python image_resize <arguments>```
+To execute the script use the following command in CLI: ```python image_resize <arguments>```
 
 **Show available arguments:**
 
