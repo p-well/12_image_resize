@@ -1,8 +1,11 @@
 # Image Resizer
 
-CLI program for resing images by scale or dimenions.
-Based on [Pillow](https://pypi.python.org/pypi/Pillow/) module.
+This is console script for resizing images. Resize may be done in 2 way - rescaling by scale factor of resizing <br />
+using image dimensions.
+Image handling in based on [Pillow](https://pypi.python.org/pypi/Pillow/) module.
 
+Pavel Kadantsev, 2017. <br/>
+p.a.kadantsev@gmail.com
 
 # Installation
 
@@ -31,35 +34,40 @@ filepath:  path to image you want to modify
 
 --height:  new image height (positive, integer)
 
---outpath:  new image output directory path
+--outdir:  new image output directory path
 
 --outname:  new image name (without extentions) 
 
 **Instructions:**
 
-- Scale flag can not be combined with width or height flags!
+- Scale flag can not be combined with width or height flags.
 
 - Usage of single width or height flag will create image with aspect ratio similar to original
 
 - Simultaneous usage of width and height flags will raise warning in case of new aspect ratio
   is much differ (>5%) from the original one, but new image still will be created
   
-- When one of flags --outpath or --outname is not specified the new image will be saved near original image (pic.jpg)
-  with the following naming rule: ```pic__(new_width x new_height).jpg```
+- When --outdir  flag is not specified the new image will be saved near original image (pic.jpg)
+  with the following naming rule: ```pic__(new_width x new_height).jpg```.
+  
+  Naming rule does not applied when --outname flag is used - new image will be saved with name specified <br />
+  by user
 
 - The script does not change image type
 
 # Example of Script Launch
 
 ```
->python image_resize.py C:\projects\devman\12_image_resize\snapshot.jpg --width 700 --height 400
+>python image_resize.py .\snapshot.JPG  --width 600 --height 700  --outname my_new_picture --outdir ..\
 
 Warning! New aspect ratio much differ from the original.
 ```
 
 
 ```
->python image_resize.py C:\projects\devman\12_image_resize\snapshot.jpg --scale 1.2 --outdir C:\projects\devman --outname test_image4
+>python image_resize.py .\snapshot.jpg --scale 1.2 -- width 900 --outname --outname conflict_test
+
+Agruments conflict! Do not combine --scale flag with  --width and/or -- height flags.
 ```
 
 
