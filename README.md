@@ -1,6 +1,6 @@
 # Image Resizer
 
-This is console script for resizing images. Resize may be done in 2 way - rescaling by scale factor of resizing <br />
+This is console script for resizing images. Resize may be done in 2 ways - rescaling by scale factor or resizing <br />
 using image dimensions.
 Image handling in based on [Pillow](https://pypi.python.org/pypi/Pillow/) module.
 
@@ -16,7 +16,7 @@ It is recommended to use virtual environment.
 
 # Usage
 
-To execute the script use the following command in CLI: ```python image_resize <arguments>```
+To execute the script use the following command in CLI: ```python image_resize.py <arguments>```
 
 **Show available arguments:**
 
@@ -42,18 +42,18 @@ filepath:  path to image you want to modify
 
 - Scale flag can not be combined with width or height flags.
 
-- Usage of single width or height flag will create image with aspect ratio similar to original
+- Usage of single width or height flag will create image with aspect ratio similar to original.
 
 - Simultaneous usage of width and height flags will raise warning in case of new aspect ratio
-  is much differ (>5%) from the original one, but new image still will be created
+  is much differ (>5%) from the original one, but new image still will be created.
   
-- When --outdir  flag is not specified the new image will be saved near original image (pic.jpg)
+- When ```--outdir```  flag is not specified the new image will be saved near original image (pic.jpg)
   with the following naming rule: ```pic__(new_width x new_height).jpg```.
   
-  Naming rule does not applied when --outname flag is used - new image will be saved with name specified <br />
-  by user
+  Naming rule does not applied when ```--outname``` flag is used - new image will be saved with name specified <br />
+  by user.
 
-- The script does not change image type
+- The script does not change image type.
 
 # Example of Script Launch
 
