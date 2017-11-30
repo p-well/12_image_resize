@@ -23,18 +23,21 @@ def return_args():
     return args
 
 
-def get_old_image_info(filepath):
+def get_old_image_params(filepath):
     if os.path.exists(filepath):
-        old_image_info = {}
-        old_image_info['name'] = os.path.basename(filepath).split('.')[0]
-        old_image_info['extension'] = os.path.basename(filepath).split('.')[1]
-        old_image_info['opened_image'] = Image.open(filepath)
-        old_image_info['size'] = Image.open(filepath).size
-        old_image_info['width'] = Image.open(filepath).size[0]
-        old_image_info['height'] = Image.open(filepath).size[1]
-        old_image_info['ratio'] = (Image.open(filepath).size[0] /
-                                   Image.open(filepath).size[1])
-        return old_image_info
+        old_image_params = {}
+        image_basename = os.path.basename(filepath)
+        old_image_params['name'], old_image_params['extension'] = \
+                os.path.splitext(image_basename)
+        #old_image_info['extension'] = os.path.basename(filepath).split('.')[1]
+        image_object = Image.open(filepath)
+        old_image_params['image_object'] = image_object
+        old_image_params['size'] = image_object.size
+        old_image_params['width'] = image_object.size[0]
+        old_image_params['height'] = image_object.size[1]
+        old_image_params['ratio'] = (old_image_params['width'] /
+                                     old_image_params['height'])
+        return old_image_params
     else:
         return None
 
@@ -73,7 +76,7 @@ def create_savepath(name, directory):
 
 
 def built_new_size(old_size, old_ratio, width=None, height=None, scale=None):
-    new_size_info = {}
+    new_size_params = {}
     if width and not height:
         new_width = width
         new_height = int(width / old_ratio)
@@ -87,12 +90,12 @@ def built_new_size(old_size, old_ratio, width=None, height=None, scale=None):
     elif scale:
         new_size = [int(scale * dimension) for dimension in old_size]
     new_ratio = new_size[0] / new_size[1]
-    new_size_info['new_size'] = new_size
-    new_size_info['new_ratio'] = new_ratio
-    new_size_info['ratios_promixity'] = isclose(old_ratio,
+    new_size_params['new_size'] = new_size
+    new_size_params['new_ratio'] = new_ratio
+    new_size_params['ratios_promixity'] = isclose(old_ratio,
                                                 new_ratio,
                                                 rel_tol=0.01)
-    return new_size_info
+    return new_size_params
 
 
 def rescale_image(old_image_object,
@@ -114,15 +117,15 @@ def resize_image(old_image_object,
 
 def main():
     arguments = return_args()
-    old_image_info = get_old_image_info(arguments.filepath)
-    new_size_info = built_new_size(old_image_info['size'],
-                                   old_image_info['ratio'],
+    old_image_params = get_old_image_params(arguments.filepath)
+    new_size_params = built_new_size(old_image_params['size'],
+                                   old_image_params['ratio'],
                                    arguments.width,
                                    arguments.height,
                                    arguments.scale)
-    new_image_name = create_new_image_name(old_image_info['name'],
-                                           old_image_info['extension'],
-                                           new_size_info['new_size'],
+    new_image_name = create_new_image_name(old_image_params['name'],
+                                           old_image_params['extension'],
+                                           new_size_params['new_size'],
                                            arguments.width,
                                            arguments.height,
                                            arguments.outname,
@@ -133,16 +136,16 @@ def main():
         print('\nAgruments conflict! \
 Do not combine --scale flag with  --width and/or -- height flags.')
     elif arguments.scale:
-        rescale_image(old_image_info['opened_image'],
+        rescale_image(old_image_params['image_object'],
                       new_image_name,
-                      new_size_info['new_size'],
+                      new_size_params['new_size'],
                       savepath)
     elif arguments.width or arguments.height:
-        if not new_size_info['ratios_promixity']:
+        if not new_size_params['ratios_promixity']:
             print('\nWarning! New aspect ratio much differ from the original')
-        resize_image(old_image_info['opened_image'],
+        resize_image(old_image_params['image_object'],
                      new_image_name,
-                     new_size_info['new_size'],
+                     new_size_params['new_size'],
                      savepath)
 
 
