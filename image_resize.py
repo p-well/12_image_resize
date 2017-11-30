@@ -29,7 +29,6 @@ def get_old_image_params(filepath):
         image_basename = os.path.basename(filepath)
         old_image_params['name'], old_image_params['extension'] = \
                 os.path.splitext(image_basename)
-        #old_image_info['extension'] = os.path.basename(filepath).split('.')[1]
         image_object = Image.open(filepath)
         old_image_params['image_object'] = image_object
         old_image_params['size'] = image_object.size
@@ -47,7 +46,7 @@ def create_new_image_name(default_name,
                           new_size,
                           width=None,
                           height=None,
-                          new_name=None,
+                          name=None,
                           scale=None):
     short_name_template = '{}.{}'.format(name, extension)
     long_name_template = '{}__{}x{}.{}'.format(default_name,
@@ -55,23 +54,23 @@ def create_new_image_name(default_name,
                                                new_size[1],
                                                extension)
     if scale:
-        if new_name is not None:
+        if name is not None:
             new_image_name = short_name_template
         else:
             new_image_name = long_name_template
     if (width or height):
-        if new_name is not None:
+        if name is not None:
             new_image_name = short_name_template
         else:
             new_image_name = long_name_template
     return new_image_name
 
 
-def create_savepath(new_name, directory):
-    if (directory and new_name) or directory:
-        savepath = os.path.join(directory, new_name)
-    elif new_name and not directory:
-        savepath = os.path.join(os.getcwd(), new_name)
+def create_savepath(name, directory):
+    if (directory and name) or directory:
+        savepath = os.path.join(directory, name)
+    elif name and not directory:
+        savepath = os.path.join(os.getcwd(), name)
     return savepath
 
 
