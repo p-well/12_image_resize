@@ -1,6 +1,7 @@
 import os
 import argparse
 from math import isclose
+from collections import namedtuple
 from PIL import Image
 
 
@@ -23,19 +24,37 @@ def return_args():
     return args
 
 
+# def get_old_image_params(filepath):
+#     if os.path.exists(filepath):
+#         old_image_params = {}
+#         image_basename = os.path.basename(filepath)
+#         old_image_params['name'], old_image_params['extension'] = \
+#                 os.path.splitext(image_basename)
+#         image_object = Image.open(filepath)
+#         size_tuple = namedtuple('width','height')
+#         old_image_params['size'] = image_object.size
+#         old_image_params['width'] = image_object.size[0]
+#         old_image_params['height'] = image_object.size[1]
+#         old_image_params['ratio'] = (old_image_params['width'] /
+#                                      old_image_params['height'])
+#         return old_image_params
+#     else:
+#         return None
+
 def get_old_image_params(filepath):
     if os.path.exists(filepath):
         old_image_params = {}
-        image_basename = os.path.basename(filepath)
-        old_image_params['name'], old_image_params['extension'] = \
-                os.path.splitext(image_basename)
+        size_tuple = namedtuple('size','width height')
         image_object = Image.open(filepath)
+        old_image_basename = os.path.basename(filepath)
+        old_image_params['name'],\
+        old_image_params['extension'] = os.path.splitext(old_image_basename)
         old_image_params['image_object'] = image_object
-        old_image_params['size'] = image_object.size
-        old_image_params['width'] = image_object.size[0]
-        old_image_params['height'] = image_object.size[1]
-        old_image_params['ratio'] = (old_image_params['width'] /
-                                     old_image_params['height'])
+        old_img_size = size_tuple(image_object.size[0], image_object.size[1])
+        old_image_params['size'] = old_img_size
+        old_image_params['width'] = old_img_size.width
+        old_image_params['height'] = old_img_size.height
+        old_image_params['ratio'] = (old_img_size.width / old_img_size.height)
         return old_image_params
     else:
         return None
@@ -47,7 +66,8 @@ def create_new_image_name(default_name,
                           width=None,
                           height=None,
                           name=None,
-                          scale=None):
+                          scale=None
+                          ):
     short_name_template = '{}.{}'.format(name, extension)
     long_name_template = '{}__{}x{}.{}'.format(default_name,
                                                new_size[0],
@@ -74,7 +94,12 @@ def create_savepath(name, directory):
     return savepath
 
 
-def built_new_size(old_size, old_ratio, width=None, height=None, scale=None):
+def built_new_size(old_size,
+                   old_ratio,
+                   width=None,
+                   height=None,
+                   scale=None
+                   ):
     new_size_params = {}
     if width and not height:
         new_width = width
@@ -100,7 +125,8 @@ def built_new_size(old_size, old_ratio, width=None, height=None, scale=None):
 def rescale_image(old_image_object,
                   new_name,
                   new_size,
-                  savepath):
+                  savepath
+                  ):
     new_image = old_image_object.resize(new_size, Image.ANTIALIAS)
     new_image.save(savepath)
 
@@ -108,7 +134,8 @@ def rescale_image(old_image_object,
 def resize_image(old_image_object,
                  new_name,
                  new_size,
-                 savepath):
+                 savepath
+                 ):
     new_image = old_image_object.resize(new_size, Image.ANTIALIAS)
     new_width, new_height = new_size[0], new_size[1]
     new_image.save(savepath)
