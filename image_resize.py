@@ -31,11 +31,11 @@ def return_args():
 def get_old_image_params(filepath):
     if os.path.exists(filepath):
         old_image_params = {}
-        size_tuple = namedtuple('size','width height')
+        size_tuple = namedtuple('size', 'width height')
         image_object = Image.open(filepath)
         old_image_basename = os.path.basename(filepath)
-        old_image_params['name'],\
-        old_image_params['extension'] = os.path.splitext(old_image_basename)
+        old_image_params['name'], old_image_params['extension'] = \
+            os.path.splitext(old_image_basename)
         old_image_params['image_object'] = image_object
         old_img_size = size_tuple(image_object.size[0], image_object.size[1])
         old_image_params['size'] = old_img_size
@@ -88,7 +88,7 @@ def built_new_size(old_size,
                    scale=None
                    ):
     new_size_params = {}
-    size_tuple = namedtuple('size','width height')
+    size_tuple = namedtuple('size', 'width height')
     if width and not height:
         new_width = width
         new_height = int(width / old_ratio)
@@ -106,8 +106,8 @@ def built_new_size(old_size,
     new_size_params['new_size'] = new_size
     new_size_params['new_ratio'] = new_ratio
     new_size_params['ratios_promixity'] = isclose(old_ratio,
-                                                new_ratio,
-                                                rel_tol=0.01)
+                                                  new_ratio,
+                                                  rel_tol=0.01)
     return new_size_params
 
 
@@ -137,21 +137,23 @@ def main():
                                      old_image_params['ratio'],
                                      arguments.width,
                                      arguments.height,
-                                     arguments.scale)
+                                     arguments.scale
+                                     )
     new_image_name = create_new_image_name(old_image_params['name'],
                                            old_image_params['extension'],
                                            new_size_params['new_size'],
                                            arguments.width,
                                            arguments.height,
                                            arguments.outname,
-                                           arguments.scale)
-    savepath = create_savepath(new_image_name,
-                               arguments.outdir)
+                                           arguments.scale
+                                           )
+    savepath = create_savepath(new_image_name, arguments.outdir)
     if arguments.scale:
         rescale_image(old_image_params['image_object'],
                       new_image_name,
                       new_size_params['new_size'],
-                      savepath)
+                      savepath
+                      )
     elif arguments.width or arguments.height:
         if not new_size_params['ratios_promixity']:
             print('\nWarning! New aspect ratio much differ from the original')
