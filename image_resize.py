@@ -21,25 +21,12 @@ def return_args():
                         help='Output name of modified image. \
                         Do not specify file extension.', type=str)
     args = parser.parse_args()
-    return args
+    if args.scale and (args.width or args.height):
+        exit('\nAgruments conflict! Do not combine --scale flag with\
+--width or -- height flag. Run script again with correct arguments.')
+    else:
+        return args
 
-
-# def get_old_image_params(filepath):
-#     if os.path.exists(filepath):
-#         old_image_params = {}
-#         image_basename = os.path.basename(filepath)
-#         old_image_params['name'], old_image_params['extension'] = \
-#                 os.path.splitext(image_basename)
-#         image_object = Image.open(filepath)
-#         size_tuple = namedtuple('width','height')
-#         old_image_params['size'] = image_object.size
-#         old_image_params['width'] = image_object.size[0]
-#         old_image_params['height'] = image_object.size[1]
-#         old_image_params['ratio'] = (old_image_params['width'] /
-#                                      old_image_params['height'])
-#         return old_image_params
-#     else:
-#         return None
 
 def get_old_image_params(filepath):
     if os.path.exists(filepath):
@@ -70,8 +57,8 @@ def create_new_image_name(default_name,
                           ):
     short_name_template = '{}.{}'.format(name, extension)
     long_name_template = '{}__{}x{}.{}'.format(default_name,
-                                               new_size[0],
-                                               new_size[1],
+                                               new_size.width,
+                                               new_size.height,
                                                extension)
     if scale:
         if name is not None:
@@ -101,19 +88,21 @@ def built_new_size(old_size,
                    scale=None
                    ):
     new_size_params = {}
+    size_tuple = namedtuple('size','width height')
     if width and not height:
         new_width = width
         new_height = int(width / old_ratio)
-        new_size = new_width, new_height
+        new_size = size_tuple(new_width, new_height)
     elif height and not width:
         new_width = int(height * old_ratio)
         new_height = height
-        new_size = new_width, new_height
+        new_size = size_tuple(new_width, new_height)
     elif width and height:
-        new_size = width, height
+        new_size = size_tuple(width, height)
     elif scale:
         new_size = [int(scale * dimension) for dimension in old_size]
-    new_ratio = new_size[0] / new_size[1]
+        new_size = size_tuple(new_size[0], new_size[1])
+    new_ratio = new_size.width / new_size.height
     new_size_params['new_size'] = new_size
     new_size_params['new_ratio'] = new_ratio
     new_size_params['ratios_promixity'] = isclose(old_ratio,
@@ -137,7 +126,7 @@ def resize_image(old_image_object,
                  savepath
                  ):
     new_image = old_image_object.resize(new_size, Image.ANTIALIAS)
-    new_width, new_height = new_size[0], new_size[1]
+    new_width, new_height = new_size.width, new_size.height
     new_image.save(savepath)
 
 
@@ -145,10 +134,10 @@ def main():
     arguments = return_args()
     old_image_params = get_old_image_params(arguments.filepath)
     new_size_params = built_new_size(old_image_params['size'],
-                                   old_image_params['ratio'],
-                                   arguments.width,
-                                   arguments.height,
-                                   arguments.scale)
+                                     old_image_params['ratio'],
+                                     arguments.width,
+                                     arguments.height,
+                                     arguments.scale)
     new_image_name = create_new_image_name(old_image_params['name'],
                                            old_image_params['extension'],
                                            new_size_params['new_size'],
@@ -158,10 +147,7 @@ def main():
                                            arguments.scale)
     savepath = create_savepath(new_image_name,
                                arguments.outdir)
-    if arguments.scale and (arguments.width or arguments.height):
-        print('\nAgruments conflict! \
-Do not combine --scale flag with  --width and/or -- height flags.')
-    elif arguments.scale:
+    if arguments.scale:
         rescale_image(old_image_params['image_object'],
                       new_image_name,
                       new_size_params['new_size'],
