@@ -47,7 +47,8 @@ def get_old_image_params(filepath):
         return None
 
 
-def create_new_image_name(default_name,
+def create_new_image_name(
+                          default_name,
                           extension,
                           new_size,
                           width=None,
@@ -81,7 +82,8 @@ def create_savepath(name, directory):
     return savepath
 
 
-def built_new_size(old_size,
+def built_new_size(
+                   old_size,
                    old_ratio,
                    width=None,
                    height=None,
@@ -111,7 +113,8 @@ def built_new_size(old_size,
     return new_size_params
 
 
-def rescale_image(old_image_object,
+def rescale_image(
+                  old_image_object,
                   new_name,
                   new_size,
                   savepath
@@ -120,7 +123,8 @@ def rescale_image(old_image_object,
     new_image.save(savepath)
 
 
-def resize_image(old_image_object,
+def resize_image(
+                 old_image_object,
                  new_name,
                  new_size,
                  savepath
@@ -133,13 +137,15 @@ def resize_image(old_image_object,
 def main():
     arguments = return_args()
     old_image_params = get_old_image_params(arguments.filepath)
-    new_size_params = built_new_size(old_image_params['size'],
+    new_size_params = built_new_size(
+                                     old_image_params['size'],
                                      old_image_params['ratio'],
                                      arguments.width,
                                      arguments.height,
                                      arguments.scale
                                      )
-    new_image_name = create_new_image_name(old_image_params['name'],
+    new_image_name = create_new_image_name(
+                                           old_image_params['name'],
                                            old_image_params['extension'],
                                            new_size_params['new_size'],
                                            arguments.width,
@@ -149,7 +155,8 @@ def main():
                                            )
     savepath = create_savepath(new_image_name, arguments.outdir)
     if arguments.scale:
-        rescale_image(old_image_params['image_object'],
+        rescale_image(
+                      old_image_params['image_object'],
                       new_image_name,
                       new_size_params['new_size'],
                       savepath
@@ -157,10 +164,12 @@ def main():
     elif arguments.width or arguments.height:
         if not new_size_params['ratios_promixity']:
             print('\nWarning! New aspect ratio much differ from the original')
-        resize_image(old_image_params['image_object'],
+        resize_image(
+                     old_image_params['image_object'],
                      new_image_name,
                      new_size_params['new_size'],
-                     savepath)
+                     savepath
+                     )
 
 
 if __name__ == '__main__':
