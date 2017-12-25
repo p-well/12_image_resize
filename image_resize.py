@@ -53,32 +53,32 @@ def create_new_image_name(
                           new_size,
                           width=None,
                           height=None,
-                          name=None,
+                          out_name=None,
                           scale=None
                           ):
-    short_name_template = '{}.{}'.format(name, extension)
+    short_name_template = '{}.{}'.format(out_name, extension)
     long_name_template = '{}__{}x{}.{}'.format(default_name,
                                                new_size.width,
                                                new_size.height,
                                                extension)
     if scale:
-        if name is not None:
+        if out_name is not None:
             new_image_name = short_name_template
         else:
             new_image_name = long_name_template
     if (width or height):
-        if name is not None:
+        if out_name is not None:
             new_image_name = short_name_template
         else:
             new_image_name = long_name_template
     return new_image_name
 
 
-def create_savepath(name, directory):
-    if (directory and name) or directory:
-        savepath = os.path.join(directory, name)
-    elif name and not directory:
-        savepath = os.path.join(os.getcwd(), name)
+def create_savepath(out_name, directory):
+    if (directory and out_name) or directory:
+        savepath = os.path.join(directory, out_name)
+    elif out_name and not directory:
+        savepath = os.path.join(os.getcwd(), out_name)
     return savepath
 
 
