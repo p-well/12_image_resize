@@ -135,7 +135,7 @@ def resize_image(
     new_image.save(savepath)
 
 
-if __name__ == '__main__':
+def main():
     arguments = return_args()
     if arguments is non None:
         old_image_params = get_old_image_params(arguments.filepath)
@@ -163,13 +163,17 @@ if __name__ == '__main__':
                           new_size_params['new_size'],
                           savepath
                           )
-        elif arguments.width or arguments.height:
-            if not new_size_params['ratios_promixity']:
-                print('\nWarning! New aspect ratio much differ from the original')
-            resize_image(
-                         old_image_params['image_object'],
-                         new_image_name,
-                         new_size_params['new_size'],
-                         savepath
-                         )
-            
+        elif (arguments.width or arguments.height)  
+                resize_image(
+                             old_image_params['image_object'],
+                             new_image_name,
+                             new_size_params['new_size'],
+                             savepath
+                             )
+        elif (arguments.width or arguments.height) and \
+        not new_size_params['ratios_promixity']:
+            print('\nWarning! New aspect ratio much differ from the original')
+
+
+if __name__ == '__main__':
+    main()
