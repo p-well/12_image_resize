@@ -163,13 +163,13 @@ def main():
                           new_size_params['new_size'],
                           savepath
                           )
-        elif (arguments.width or arguments.height)  
-                resize_image(
-                             old_image_params['image_object'],
-                             new_image_name,
-                             new_size_params['new_size'],
-                             savepath
-                             )
+        elif (arguments.width or arguments.height):
+            resize_image(
+                         old_image_params['image_object'],
+                         new_image_name,
+                         new_size_params['new_size'],
+                         savepath
+                         )
         elif (arguments.width or arguments.height) and \
         not new_size_params['ratios_promixity']:
             print('\nWarning! New aspect ratio much differ from the original')
