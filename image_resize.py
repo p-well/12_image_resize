@@ -22,8 +22,9 @@ def return_args():
                         Do not specify file extension.', type=str)
     args = parser.parse_args()
     if args.scale and (args.width or args.height):
-        exit('\nAgruments conflict! Do not combine --scale flag with\
+        print('\nAgruments conflict! Do not combine --scale flag with\
 --width or -- height flag. Run script again with correct arguments.')
+        return None
     else:
         return args
 
@@ -134,43 +135,41 @@ def resize_image(
     new_image.save(savepath)
 
 
-def main():
-    arguments = return_args()
-    old_image_params = get_old_image_params(arguments.filepath)
-    new_size_params = built_new_size(
-                                     old_image_params['size'],
-                                     old_image_params['ratio'],
-                                     arguments.width,
-                                     arguments.height,
-                                     arguments.scale
-                                     )
-    new_image_name = create_new_image_name(
-                                           old_image_params['name'],
-                                           old_image_params['extension'],
-                                           new_size_params['new_size'],
-                                           arguments.width,
-                                           arguments.height,
-                                           arguments.outname,
-                                           arguments.scale
-                                           )
-    savepath = create_savepath(new_image_name, arguments.outdir)
-    if arguments.scale:
-        rescale_image(
-                      old_image_params['image_object'],
-                      new_image_name,
-                      new_size_params['new_size'],
-                      savepath
-                      )
-    elif arguments.width or arguments.height:
-        if not new_size_params['ratios_promixity']:
-            print('\nWarning! New aspect ratio much differ from the original')
-        resize_image(
-                     old_image_params['image_object'],
-                     new_image_name,
-                     new_size_params['new_size'],
-                     savepath
-                     )
-
-
 if __name__ == '__main__':
-    main()
+    arguments = return_args()
+    if arguments is non None:
+        old_image_params = get_old_image_params(arguments.filepath)
+        new_size_params = built_new_size(
+                                         old_image_params['size'],
+                                         old_image_params['ratio'],
+                                         arguments.width,
+                                         arguments.height,
+                                         arguments.scale
+                                         )
+        new_image_name = create_new_image_name(
+                                               old_image_params['name'],
+                                               old_image_params['extension'],
+                                               new_size_params['new_size'],
+                                               arguments.width,
+                                               arguments.height,
+                                               arguments.outname,
+                                               arguments.scale
+                                               )
+        savepath = create_savepath(new_image_name, arguments.outdir)
+        if arguments.scale:
+            rescale_image(
+                          old_image_params['image_object'],
+                          new_image_name,
+                          new_size_params['new_size'],
+                          savepath
+                          )
+        elif arguments.width or arguments.height:
+            if not new_size_params['ratios_promixity']:
+                print('\nWarning! New aspect ratio much differ from the original')
+            resize_image(
+                         old_image_params['image_object'],
+                         new_image_name,
+                         new_size_params['new_size'],
+                         savepath
+                         )
+            
