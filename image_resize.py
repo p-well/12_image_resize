@@ -137,7 +137,7 @@ def resize_image(
 
 def main():
     arguments = return_args()
-    if arguments is non None:
+    if arguments is not None:
         old_image_params = get_old_image_params(arguments.filepath)
         new_size_params = built_new_size(
                                          old_image_params['size'],
