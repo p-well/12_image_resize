@@ -61,11 +61,11 @@ def create_new_image_name(
     return full_newname
 
 
-def create_savepath(out_name, directory):
-    if (directory and out_name) or directory:
-        savepath = join(directory, out_name)
-    elif out_name and not directory:
-        savepath = join(getcwd(), out_name)
+def create_savepath(newname, directory):
+    if (directory and newname) or directory:
+        savepath = join(directory, newname)
+    elif newname and not directory:
+        savepath = join(getcwd(), newname)
     return savepath
 
 
