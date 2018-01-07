@@ -34,9 +34,9 @@ filepath:  path to image you want to modify
 
 --height:  new image height (positive, integer)
 
---outdir:  new image output directory path
+--newpath:  new image output directory path
 
---outname:  new image name (without extentions) 
+--newname:  new image name (without extentions) 
 
 **Instructions:**
 
@@ -47,28 +47,31 @@ filepath:  path to image you want to modify
 - Simultaneous usage of width and height flags will raise warning in case of new aspect ratio
   is much differ (>5%) from the original one, but new image still will be created.
   
-- When ```--outdir```  flag is not specified the new image will be saved near original image (pic.jpg)
+- When ```--newpath```  flag is not specified the new image will be saved near original image (pic.jpg)
   with the following naming rule: ```pic__(new_width x new_height).jpg```.
   
-  Naming rule does not applied when ```--outname``` flag is used - new image will be saved with name specified <br />
+  Naming rule does not applied when ```--newname``` flag is used - new image will be saved with name specified <br />
   by user.
 
 - The script does not change image type.
 
 # Example of Script Launch
 
-```
->python image_resize.py .\snapshot.JPG  --width 600 --height 700  --outname my_new_picture --outdir ..\
+<pre>
+<b>>python image_resize.py .\snapshot.JPG  --width 600 --height 700  --newname my_new_picture --newpath ..\</b>
 
 Warning! New aspect ratio much differ from the original.
-```
+</pre>
 
 
-```
->python image_resize.py .\snapshot.jpg --scale 1.2 -- width 900 --outname --outname conflict_test
+<pre>
+<b>>python image_resize.py .\snapshot.jpg --scale 1.2 -- width 900 --newname conflict_test</b>
 
-Agruments conflict! Do not combine --scale flag with  --width and/or -- height flags.
-```
+usage: Image Resizer [-h] [--scale SCALE] [--width WIDTH] [--height HEIGHT]
+                     [--newpath NEWPATH] [--newname NEWNAME]
+                     filepath
+Image Resizer: error: Conflict: incompatible arguments!
+</pre>
 
 
 # Project Goals
