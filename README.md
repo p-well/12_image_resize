@@ -36,7 +36,7 @@ filepath:  path to image you want to modify
 
 --newpath:  new image output directory path
 
---newname:  new image name (without extentions) 
+--newname:  new image name (without extention) 
 
 **Instructions:**
 
