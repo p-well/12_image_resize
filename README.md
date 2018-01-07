@@ -60,6 +60,8 @@ filepath:  path to image you want to modify
 <pre>
 <b>>python image_resize.py .\snapshot.JPG  --width 600 --height 700  --newname my_new_picture --newpath ..\</b>
 
+New image successfully saved.
+
 Warning! New ratio much differ from the original.
 </pre>
 
