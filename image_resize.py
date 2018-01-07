@@ -144,5 +144,6 @@ if __name__ == '__main__':
             new_size_params['new_size'],
             savepath
         )
+        print('\nNew image successfully saved.')
         if (args.width or args.height) and not new_size_params['close_ratio']:
-            print('\nWarning! New ratio much differ from the original')
+            print('\nWarning! New ratio much differ from the original.')
