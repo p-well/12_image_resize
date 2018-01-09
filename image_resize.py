@@ -76,7 +76,7 @@ if __name__ == '__main__':
     if args.width and args.height:
         new_img = resize_image_by_two_sizes(old_img, args.width, args.height)
         if not check_aspect_ratio_proximity(old_img, args.width, args.height):
-                print('\nWarning! Resulting image may be distorted.')
+            print('\nWarning! Resulting image may be distorted.')
     elif args.width or args.height:
         new_img = resize_image_by_one_size(old_img, args.width, args.height)
     elif args.scale:
