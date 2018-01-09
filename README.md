@@ -54,24 +54,38 @@ filepath:  path to image you want to modify
 
 # Example of Script Launch
 
+
+The following is an example of image resizing with final sizes of 900 x 400, saved at one level folder higher ```..\``` with name <br /> ```new_image```:
+
 <pre>
-<b>>python image_resize.py .\snapshot.JPG  --width 600 --height 700  --newname my_new_picture --newpath ..\</b>
+<b> >python image_resize.py snapshot.JPG  --width 900 --height 400 --output ..\ --newname new_image </b>
+
+Warning! Resulting image may be distorted.
 
 New image successfully saved.
-
-Warning! New ratio much differ from the original.
 </pre>
 
+
+The following is an example of an error raised when agruments confict occured:
 
 <pre>
-<b>>python image_resize.py .\snapshot.jpg --scale 1.2 -- width 900 --newname conflict_test</b>
-
+<b> >python image_resize.py snapshot.JPG  --width 500 --scale 2 </b>
 usage: Image Resizer [-h] [--scale SCALE] [--width WIDTH] [--height HEIGHT]
-                     [--newpath NEWPATH] [--newname NEWNAME]
+                     [--output OUTPUT] [--newname NEWNAME]
                      filepath
-Image Resizer: error: Conflict: incompatible arguments!
+Image Resizer: error: Conflict: incompatible arguments.
 </pre>
 
+
+File not found error:
+
+<pre>
+<b>  c:\projects\devman\12_image_resize>python image_resize.py hjhkjh  --height 450 </b>
+usage: Image Resizer [-h] [--scale SCALE] [--width WIDTH] [--height HEIGHT]
+                     [--output OUTPUT] [--newname NEWNAME]
+                     filepath
+Image Resizer: error: File not found.
+</pre>
 
 # Project Goals
 
