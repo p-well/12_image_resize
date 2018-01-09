@@ -2,7 +2,6 @@ import argparse
 from os import getcwd
 from os.path import basename, exists, join, splitext
 from math import isclose
-from collections import namedtuple
 from PIL import Image
 
 
@@ -12,138 +11,79 @@ def create_parser():
     parser.add_argument('--scale', help='Float, positive', type=float)
     parser.add_argument('--width', help='Integer, positive', type=int)
     parser.add_argument('--height', help='Integer, positive', type=int)
-    parser.add_argument('--newpath', help='Where to save new image', type=str)
+    parser.add_argument('--output', help='Where to save new image', type=str)
     parser.add_argument('--newname', help='New name without ext.', type=str)
     return parser
 
 
-def open_image(path):
-    return Image.open(path)
+def open_image(path_to_original):
+    return Image.open(path_to_original)
 
 
-def get_old_img_params(img_object, path):
-    old_img_params = {}
-    old_img_params['name'] = splitext(basename(path))[0]
-    old_img_params['ext'] = splitext(basename(path))[1]
-    old_img_params['size'] = img_object.size
-    old_img_params['width'] = old_img_params['size'][0]
-    old_img_params['height'] = old_img_params['size'][1]
-    old_img_params['ratio'] = img_object.size[0] / img_object.size[1]
-    return old_img_params
+def rescale_image(img_obj, scale):
+    new_size =tuple([int(scale * dimension) for dimension in img_obj.size])
+    return img_obj.resize(new_size, Image.ANTIALIAS)
 
 
-def create_new_image_name(
-        default_name,
-        extension,
-        new_size,
-        width=None,
-        height=None,
-        newname=None,
-        scale=None
-    ):
-    short_name_template = '{}{}'.format(newname, extension)
-    long_name_template = '{}__{}x{}{}'.format(
-        default_name,
-        new_size.width,
-        new_size.height,
-        extension
-    )
-    if scale:
-        if newname is not None:
-            full_newname = short_name_template
-        else:
-            full_newname = long_name_template
-    if any([width, height]):
-        if newname is not None:
-            full_newname = short_name_template
-        else:
-            full_newname = long_name_template
-    return full_newname
+def resize_image_by_two_sizes(img_obj, new_width, new_height):
+    return img_obj.resize((new_width, new_height), Image.ANTIALIAS)
 
 
-def create_savepath(newname, directory):
-    if (directory and newname) or directory:
-        savepath = join(directory, newname)
-    elif newname and not directory:
-        savepath = join(getcwd(), newname)
+def check_aspect_ratio_proximity(img_obj, new_width, new_height):
+    old_ratio = img_obj.size[0] / img_obj.size[1]
+    new_ratio = new_width / old_width
+    return isclose(old_ratio, new_ratio, rel_tol=0.01)
+
+
+def resize_image_by_one_size(img_obj, new_width, new_height):
+    old_width = img_obj.size[0]
+    old_heigth = img_obj.size[1]
+    if new_width:
+        new_size = (new_width, int(new_width / old_width * old_height))
+    if new_height:
+        new_size = (int(new_height / old_height * old_width), new_height)
+    return img_obj.resize(new_size, Image.ANTIALIAS)
+
+
+def create_savepath(new_img_obj, path_to_original, output_dir, output_name):
+    original_name, extention = splitext(basename(path_to_original))
+    template = '{}__{}x{}{}'.format(
+        original_name,
+        new_img_obj.size[0],
+        new_img_obj.size[1],
+        extension)
+    if output_dir and output_name:
+        savepath = join(output_dir, output_name)
+    else:
+        savepath = join(getcwd(), template)
     return savepath
 
 
-def built_new_size(
-        old_size,
-        old_ratio,
-        width=None,
-        height=None,
-        scale=None
-    ):
-    new_size_params = {}
-    size_tuple = namedtuple('size', 'width height')
-    if width and not height:
-        new_width = width
-        new_height = int(width / old_ratio)
-        new_size = size_tuple(new_width, new_height)
-    elif height and not width:
-        new_width = int(height * old_ratio)
-        new_height = height
-        new_size = size_tuple(new_width, new_height)
-    elif width and height:
-        new_size = size_tuple(width, height)
-    elif scale:
-        new_size = [int(scale * dimension) for dimension in old_size]
-        new_size = size_tuple(new_size[0], new_size[1])
-    new_ratio = new_size.width / new_size.height
-    new_size_params['new_size'] = new_size
-    new_size_params['new_ratio'] = new_ratio
-    new_size_params['close_ratio'] = isclose(
-        old_ratio,
-        new_ratio,
-        rel_tol=0.01)
-    return new_size_params
-
-
-def resize_image(
-        img_object,
-        new_name,
-        new_size,
-        savepath
-    ):
-    new_image = img_object.resize(new_size, Image.ANTIALIAS)
-    new_width, new_height = new_size.width, new_size.height
-    new_image.save(savepath)
+def save_image(new_img_obj, savepath):
+    new_img_obj.save(savepath)
 
 
 if __name__ == '__main__':
     parser = create_parser()
     args = parser.parse_args()
-    if args.scale and any([args.width, args.height]):
-        parser.error('Conflict: incompatible arguments!')
-    if exists(args.filepath):
-        path = args.filepath
-        img_object = open_image(path)
-        old_image_params = get_old_img_params(img_object, path)
-        new_size_params = built_new_size(
-            old_image_params['size'],
-            old_image_params['ratio'],
-            args.width,
-            args.height,
-            args.scale
-        )
-        new_image_name = create_new_image_name(
-            old_image_params['name'],
-            old_image_params['ext'],
-            new_size_params['new_size'],
-            args.width,
-            args.height,
-            args.newname,
-            args.scale
-        )
-        savepath = create_savepath(new_image_name, args.newpath)
-        resize_image(
-            img_object,
-            new_image_name,
-            new_size_params['new_size'],
-            savepath
-        )
-        print('\nNew image successfully saved.')
-        if (args.width or args.height) and not new_size_params['close_ratio']:
-            print('\nWarning! New ratio much differ from the original.')
+    old_img = open_image(args.filepath)
+    if not exists(args.filepath):
+        parser.error('File not found.')
+    if args.scale and (args.width or args.height):
+        parser.error('Conflict: incompatible arguments.')
+    if args.width and args.height:
+        new_img = resize_image_by_two_sizes(old_img, args.width, args.height)
+    elif args.width or args.height:
+        new_img = resize_image_by_one_size(old_img, args.width, args.height)
+        if check_aspect_ratio_proximity(old_img, args.width, args.height):
+            print('Warning! Resulting image may be distorted.')
+    elif args.scale:
+        new_img = rescale_image(old_img, args.scale)
+    savepath = create_savepath(
+       new_img,
+       args.filepath,
+       args.output,
+       args.newname
+    )
+    save_image(new_img, savepath)
+    print('\nNew image successfully saved.')
