@@ -5,7 +5,7 @@ from math import isclose
 from PIL import Image
 
 
-def create_parser():
+def get_arguments():
     parser = argparse.ArgumentParser(prog='Image Resizer')
     parser.add_argument('filepath', help='Path to original image', type=str)
     parser.add_argument('--scale', help='Float, positive', type=float)
@@ -13,7 +13,12 @@ def create_parser():
     parser.add_argument('--height', help='Integer, positive', type=int)
     parser.add_argument('--output', help='Where to save new image', type=str)
     parser.add_argument('--newname', help='New name without ext.', type=str)
-    return parser
+    args = parser.parse_args()
+    if not exists(args.filepath):
+        parser.error('File not found.')
+    if args.scale and (args.width or args.height):
+        parser.error('Conflict: incompatible arguments.')
+    return args
 
 
 def open_image(path_to_original):
@@ -64,12 +69,7 @@ def save_image(new_img_obj, savepath):
 
 
 if __name__ == '__main__':
-    parser = create_parser()
-    args = parser.parse_args()
-    if not exists(args.filepath):
-        parser.error('File not found.')
-    if args.scale and (args.width or args.height):
-        parser.error('Conflict: incompatible arguments.')
+    args = get_arguments()
     old_img = open_image(args.filepath)
     if args.width and args.height:
         new_img = resize_image_by_two_sizes(old_img, args.width, args.height)
