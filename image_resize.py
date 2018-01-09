@@ -21,7 +21,7 @@ def open_image(path_to_original):
 
 
 def rescale_image(img_obj, scale):
-    new_size =tuple([int(scale * dimension) for dimension in img_obj.size])
+    new_size = tuple([int(scale * dimension) for dimension in img_obj.size])
     return img_obj.resize(new_size, Image.ANTIALIAS)
 
 
@@ -31,13 +31,13 @@ def resize_image_by_two_sizes(img_obj, new_width, new_height):
 
 def check_aspect_ratio_proximity(img_obj, new_width, new_height):
     old_ratio = img_obj.size[0] / img_obj.size[1]
-    new_ratio = new_width / old_width
-    return isclose(old_ratio, new_ratio, rel_tol=0.01)
+    new_ratio = new_width / new_height
+    return isclose(old_ratio, new_ratio, rel_tol=0.05)
 
 
 def resize_image_by_one_size(img_obj, new_width, new_height):
     old_width = img_obj.size[0]
-    old_heigth = img_obj.size[1]
+    old_height = img_obj.size[1]
     if new_width:
         new_size = (new_width, int(new_width / old_width * old_height))
     if new_height:
@@ -46,14 +46,16 @@ def resize_image_by_one_size(img_obj, new_width, new_height):
 
 
 def create_savepath(new_img_obj, path_to_original, output_dir, output_name):
-    original_name, extention = splitext(basename(path_to_original))
-    template = '{}__{}x{}{}'.format(
+    original_name = splitext(basename(path_to_original))[0]
+    extention = splitext(basename(path_to_original))[1]
+    short_template = '{}{}'.format(output_name, extention)
+    long_template = '{}__{}x{}{}'.format(
         original_name,
         new_img_obj.size[0],
         new_img_obj.size[1],
-        extension)
+        extention)
     if output_dir and output_name:
-        savepath = join(output_dir, output_name)
+        savepath = join(output_dir, short_template)
     else:
         savepath = join(getcwd(), template)
     return savepath
@@ -66,17 +68,17 @@ def save_image(new_img_obj, savepath):
 if __name__ == '__main__':
     parser = create_parser()
     args = parser.parse_args()
-    old_img = open_image(args.filepath)
     if not exists(args.filepath):
         parser.error('File not found.')
     if args.scale and (args.width or args.height):
         parser.error('Conflict: incompatible arguments.')
+    old_img = open_image(args.filepath)
     if args.width and args.height:
         new_img = resize_image_by_two_sizes(old_img, args.width, args.height)
+        if not check_aspect_ratio_proximity(old_img, args.width, args.height):
+                print('\nWarning! Resulting image may be distorted.')
     elif args.width or args.height:
         new_img = resize_image_by_one_size(old_img, args.width, args.height)
-        if check_aspect_ratio_proximity(old_img, args.width, args.height):
-            print('Warning! Resulting image may be distorted.')
     elif args.scale:
         new_img = rescale_image(old_img, args.scale)
     savepath = create_savepath(
