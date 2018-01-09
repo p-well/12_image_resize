@@ -26,13 +26,11 @@ def rescale_image(img_obj, scale):
 
 
 def resize_image_by_two_sizes(img_obj, new_width, new_height):
-    return img_obj.resize((new_width, new_height), Image.ANTIALIAS)
-
-
-def check_aspect_ratio_proximity(img_obj, new_width, new_height):
     old_ratio = img_obj.size[0] / img_obj.size[1]
     new_ratio = new_width / new_height
-    return not isclose(old_ratio, new_ratio, rel_tol=0.05)
+    if not isclose(old_ratio, new_ratio, rel_tol=0.05):
+        print('\nWarning! Resulting image may be distorted.')
+    return img_obj.resize((new_width, new_height), Image.ANTIALIAS)
 
 
 def resize_image_by_one_size(img_obj, new_width, new_height):
@@ -75,12 +73,6 @@ if __name__ == '__main__':
     old_img = open_image(args.filepath)
     if args.width and args.height:
         new_img = resize_image_by_two_sizes(old_img, args.width, args.height)
-    if all([
-        args.width,
-        args.height,
-        check_aspect_ratio_proximity(old_img, args.width, args.height)
-        ]):
-        print('\nWarning! Resulting image may be distorted.')
     elif args.width or args.height:
         new_img = resize_image_by_one_size(old_img, args.width, args.height)
     elif args.scale:
