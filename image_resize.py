@@ -5,7 +5,7 @@ from math import isclose
 from PIL import Image
 
 
-def get_arguments():
+def create_parser():
     parser = argparse.ArgumentParser(prog='Image Resizer')
     parser.add_argument('filepath', help='Path to original image', type=str)
     parser.add_argument('--scale', help='Float, positive', type=float)
@@ -13,16 +13,14 @@ def get_arguments():
     parser.add_argument('--height', help='Integer, positive', type=int)
     parser.add_argument('--output', help='Where to save new image', type=str)
     parser.add_argument('--newname', help='New name without ext.', type=str)
-    args = parser.parse_args()
+    return parser
+
+
+def check_arguments(parser, args):
     if not exists(args.filepath):
         parser.error('File not found.')
     if args.scale and (args.width or args.height):
         parser.error('Conflict: incompatible arguments.')
-    return args
-
-
-def open_image(path_to_original):
-    return Image.open(path_to_original)
 
 
 def rescale_image(img_obj, scale):
@@ -69,8 +67,10 @@ def save_image(new_img_obj, savepath):
 
 
 if __name__ == '__main__':
-    args = get_arguments()
-    old_img = open_image(args.filepath)
+    parser = create_parser()
+    args = parser.parse_args()
+    old_img = Image.open(args.filepath)
+    check_arguments(parser, args)
     if args.width and args.height:
         new_img = resize_image_by_two_sizes(old_img, args.width, args.height)
     elif args.width or args.height:
