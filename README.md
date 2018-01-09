@@ -34,7 +34,7 @@ filepath:  path to image you want to modify
 
 --height:  new image height (positive, integer)
 
---newpath:  new image output directory path
+--output:  new image output directory path
 
 --newname:  new image name (without extention) 
 
@@ -47,13 +47,10 @@ filepath:  path to image you want to modify
 - Simultaneous usage of width and height flags will raise warning in case of new aspect ratio
   is much differ (>5%) from the original one, but new image still will be created.
   
-- When ```--newpath```  flag is not specified the new image will be saved near original image (pic.jpg)
+- When ```--output``` and ```--newname``` flags are not specified the new image will be saved near original image (pic.jpg)
   with the following naming rule: ```pic__(new_width x new_height).jpg```.
   
-  Naming rule does not applied when ```--newname``` flag is used - new image will be saved with name specified <br />
-  by user.
-
-- The script does not change image type.
+- The script does not change image type (i.e. file extention).
 
 # Example of Script Launch
 
