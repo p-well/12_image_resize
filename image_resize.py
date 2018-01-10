@@ -75,10 +75,6 @@ if __name__ == '__main__':
         new_img = resize_image_by_one_size(old_img, args.width, args.height)
     elif args.scale:
         new_img = rescale_image(old_img, args.scale)
-    savepath = create_savepath(
-       new_img,
-       args.filepath,
-       args.output,
-    )
+    savepath = create_savepath(new_img, args.filepath, args.output)
     save_image(new_img, savepath)
     print('\nNew image successfully saved.')
