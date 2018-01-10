@@ -34,9 +34,7 @@ filepath:  path to image you want to modify
 
 --height:  new image height (positive, integer)
 
---output:  new image output directory path
-
---newname:  new image name (without extention) 
+--output:  new image output path
 
 **Instructions:**
 
@@ -47,7 +45,7 @@ filepath:  path to image you want to modify
 - Simultaneous usage of width and height flags will raise warning in case of new aspect ratio
   is much differ (>5%) from the original one, but new image still will be created.
   
-- When ```--output``` and ```--newname``` flags are not specified the new image will be saved near original image (pic.jpg)
+- When ```--output``` flag is not specified the new image will be saved near original image (pic.jpg)
   with the following naming rule: ```pic__(new_width x new_height).jpg```.
   
 - The script does not change image type (i.e. file extention).
@@ -55,10 +53,10 @@ filepath:  path to image you want to modify
 # Example of Script Launch
 
 
-The following is an example of image resizing with final sizes of 900 x 400, saved at one level folder higher ```..\``` with name <br /> ```new_image```:
+The following is an example of image resizing with sizes of 900 x 400, saved at one level folder higher ```..\``` with name ```plan```.
 
 <pre>
-<b> >python image_resize.py snapshot.JPG  --width 900 --height 400 --output ..\ --newname new_image </b>
+<b> >python image_resize.py snapshot.JPG  --width 900 --height 400 --output ..\plan </b>
 
 Warning! Resulting image may be distorted.
 
@@ -80,7 +78,7 @@ Image Resizer: error: Conflict: incompatible arguments.
 File not found error:
 
 <pre>
-<b>  c:\projects\devman\12_image_resize>python image_resize.py hjhkjh  --height 450 </b>
+<b>  c:\projects\devman\12_image_resize>python image_resize.py no_this_picture.JPG  --height 450 </b>
 usage: Image Resizer [-h] [--scale SCALE] [--width WIDTH] [--height HEIGHT]
                      [--output OUTPUT] [--newname NEWNAME]
                      filepath
