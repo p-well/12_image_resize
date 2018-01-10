@@ -12,7 +12,7 @@ def create_parser():
     parser.add_argument('--width', help='Integer, positive', type=int)
     parser.add_argument('--height', help='Integer, positive', type=int)
     parser.add_argument('--output', help='Where to save new image', type=str)
-    parser.add_argument('--newname', help='New name without ext.', type=str)
+    #parser.add_argument('--newname', help='New name without ext.', type=str)
     return parser
 
 
@@ -29,7 +29,8 @@ def rescale_image(img_obj, scale):
 
 
 def resize_image_by_two_sizes(img_obj, new_width, new_height):
-    old_ratio = img_obj.size[0] / img_obj.size[1]
+    old_width, old_height = img_obj.size
+    old_ratio = old_width / old_height
     new_ratio = new_width / new_height
     if not isclose(old_ratio, new_ratio, rel_tol=0.05):
         print('\nWarning! Resulting image may be distorted.')
@@ -37,8 +38,7 @@ def resize_image_by_two_sizes(img_obj, new_width, new_height):
 
 
 def resize_image_by_one_size(img_obj, new_width, new_height):
-    old_width = img_obj.size[0]
-    old_height = img_obj.size[1]
+    old_width, old_height = img_obj.size
     if new_width:
         new_size = (new_width, int(new_width / old_width * old_height))
     if new_height:
@@ -46,19 +46,19 @@ def resize_image_by_one_size(img_obj, new_width, new_height):
     return img_obj.resize(new_size, Image.ANTIALIAS)
 
 
-def create_savepath(new_img_obj, path_to_original, output_dir, output_name):
-    original_name = splitext(basename(path_to_original))[0]
-    extention = splitext(basename(path_to_original))[1]
-    short_template = '{}{}'.format(output_name, extention)
+def create_savepath(new_img_obj, path_to_original, output):
+    original_name, extention = splitext(basename(path_to_original))
+    new_width, new_height = new_img_obj.size
+    short_template = '{}{}'.format(output, extention)
     long_template = '{}__{}x{}{}'.format(
         original_name,
-        new_img_obj.size[0],
-        new_img_obj.size[1],
+        new_width,
+        new_height,
         extention)
-    if output_dir and output_name:
-        savepath = join(output_dir, short_template)
+    if output:
+        savepath = short_template
     else:
-        savepath = join(getcwd(), template)
+        savepath = join(getcwd(), long_template)
     return savepath
 
 
@@ -81,7 +81,7 @@ if __name__ == '__main__':
        new_img,
        args.filepath,
        args.output,
-       args.newname
+       #args.newname
     )
     save_image(new_img, savepath)
     print('\nNew image successfully saved.')
