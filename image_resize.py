@@ -1,5 +1,5 @@
 import argparse
-from os.path import basename, exists, join, splitext
+from os.path import basename, exists, splitext
 from math import isclose
 from PIL import Image
 
