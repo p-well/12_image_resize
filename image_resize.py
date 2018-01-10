@@ -1,5 +1,4 @@
 import argparse
-from os import getcwd
 from os.path import basename, exists, join, splitext
 from math import isclose
 from PIL import Image
@@ -12,7 +11,6 @@ def create_parser():
     parser.add_argument('--width', help='Integer, positive', type=int)
     parser.add_argument('--height', help='Integer, positive', type=int)
     parser.add_argument('--output', help='Where to save new image', type=str)
-    #parser.add_argument('--newname', help='New name without ext.', type=str)
     return parser
 
 
@@ -58,7 +56,7 @@ def create_savepath(new_img_obj, path_to_original, output):
     if output:
         savepath = short_template
     else:
-        savepath = join(getcwd(), long_template)
+        savepath = long_template
     return savepath
 
 
@@ -81,7 +79,6 @@ if __name__ == '__main__':
        new_img,
        args.filepath,
        args.output,
-       #args.newname
     )
     save_image(new_img, savepath)
     print('\nNew image successfully saved.')
